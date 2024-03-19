@@ -1,63 +1,67 @@
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles.css";
-
+import { ROOM, channel } from "../supabase";
+import { faker } from '@faker-js/faker';
 import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
-import { v4 as uuidv4 } from 'uuid';
-
-const useCollaborativeEditor = () => {
-  const [doc, setDoc] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [provider, setProvider] = useState(null);
-
-  useEffect(() => {
-    const existingDoc = Y.Doc.getByUUID(window.location.pathname.split('/').pop());
-    if (existingDoc) {
-      setDoc(existingDoc);
-      return;
-    }
-    
-    const newDoc = new Y.Doc();
-    setDoc(newDoc);
-  }, []);
-
-  setProvider(useMemo(() => {
-    if (!isConnected) {
-      const newProvider = new WebrtcProvider("station-test-document", doc, { maxConns: 70 + Math.floor(Math.random() * 70) });
-      setIsConnected(true);
-      setProvider(newProvider);
-      return newProvider;
-    }
-
-    return provider;
-  }, [doc, isConnected, provider]));
-
-  const editor = useCreateBlockNote({
-    collaboration: {
-      provider,
-      fragment: doc.getXmlFragment("document-store"),
-      user: {
-        name: uuidv4(),
-        color: "#ff0000",
-      },
-    },
-  });
-
-  useEffect(() => {
-    return () => {
-      if(provider) provider.disconnect();
-    };
-  }, [provider]);
-
-  return editor;
-};
 
 export default function Blocknote() {
   const [blocks, setBlocks] = useState([]);
-  const editor = useCollaborativeEditor();
+  const subscriptionRef = useRef(null);
+  const docRef = useRef(null);
+  const providerRef = useRef(null);
+
+  useEffect(() => {
+    if (!docRef?.current) { // Check if not already subscribed
+      console.log('creating document');
+      docRef.current = new Y.Doc({ collectionid: ROOM });
+    }
+    
+    if (!providerRef?.current) { // Check if not already subscribed
+      console.log('creating provider');
+      providerRef.current = new WebrtcProvider(docRef.current);
+    }
+
+  });
+
+  useEffect(() => {
+    if (!subscriptionRef?.current?.joinedOnce) { // Check if not already subscribed
+      subscriptionRef.current = channel;
+      subscriptionRef.current.on('broadcast', { event: 'test' }, ({ payload }) =>{
+
+      }).subscribe();
+    }
+  });
+
+  const collabo = (providerRef.current) ? {
+    // The Yjs Provider responsible for transporting updates:
+    provider: providerRef.current,
+    // Where to store BlockNote data in the Y.Doc:
+    fragment: docRef.current?.getXmlFragment("document-store"),
+    // Information (name and color) for this user:
+    user: {
+      name: faker.person.fullName(),
+      color: "#ff0000",
+    },
+  } : {};
+
+  const editor = useCreateBlockNote({
+    collaboration: collabo,
+  });
+
+  const handleEditorChange = () => {
+    //const block = editor.getTextCursorPosition().block;
+    setBlocks(editor.document);
+    // Send a message once the client is subscribed
+    if(subscriptionRef.current) subscriptionRef.current.send({
+      type: 'broadcast',
+      event: 'test',
+      payload: { blocks },
+    });
+  }
 
   return (
     <div className={"wrapper"}>
@@ -65,10 +69,7 @@ export default function Blocknote() {
       <div className={"item"}>
         <BlockNoteView
           editor={editor}
-          onChange={() => {
-            //const block = editor.getTextCursorPosition().block;
-            setBlocks(editor.document);
-          }}
+          onChange={handleEditorChange}
         />
       </div>
       <div>Document JSON:</div>
