@@ -42,7 +42,6 @@ export default function Blocknote() {
   });
 
   const handleEditorChange = () => {
-    console.log(editor.getSelectedText())
     if(subscriptionRef.current){
       subscriptionRef.current.send({
         type: 'broadcast',
