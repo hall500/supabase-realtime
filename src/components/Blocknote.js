@@ -40,15 +40,15 @@ export default function Blocknote() {
   });
 
   const handleEditorChange = () => {
-    const blocks = editor.document;
+    const blocks = editor.getTextCursorPosition().block;
     setBlocks(blocks);
-    if(subscriptionRef.current){
-      subscriptionRef.current.send({
-        type: 'broadcast',
-        event: 'test',
-        payload: { blocks },
-      });
-    }
+    // if(subscriptionRef.current){
+    //   subscriptionRef.current.send({
+    //     type: 'broadcast',
+    //     event: 'test',
+    //     payload: { blocks },
+    //   });
+    // }
   }
 
   return (
