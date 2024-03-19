@@ -2014,7 +2014,7 @@
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
 
-"@supabase/realtime-js@2.9.3":
+"@supabase/realtime-js@2.9.3", "@supabase/realtime-js@^2.6.0", "@supabase/realtime-js@^2.9.3":
   version "2.9.3"
   resolved "https://registry.yarnpkg.com/@supabase/realtime-js/-/realtime-js-2.9.3.tgz#f822401aed70883dca5d538179b11089d6d1b6ed"
   integrity sha512-lAp50s2n3FhGJFq+wTSXLNIDPw5Y0Wxrgt44eM5nLSA3jZNUUP3Oq2Ccd1CbZdVntPCWLZvJaU//pAd2NE+QnQ==
@@ -2031,7 +2031,7 @@
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
 
-"@supabase/supabase-js@^2.39.8":
+"@supabase/supabase-js@^2.39.8", "@supabase/supabase-js@^2.7.0":
   version "2.39.8"
   resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.39.8.tgz#2d8935438bdd6add82484ecd46edb0cd5b3f8c38"
   integrity sha512-WpiawHjseIRcCQTZbMJtHUSOepz5+M9qE1jP9BDmg8X7ehALFwgEkiKyHAu59qm/pKP2ryyQXLtu2XZNRbUarw==
@@ -5153,7 +5153,7 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-events@^3.2.0:
+events@^3.2.0, events@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
@@ -7393,6 +7393,13 @@ lib0@^0.2.42, lib0@^0.2.85, lib0@^0.2.86:
   version "0.2.91"
   resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.91.tgz#a35759d0d9018d12317a8d709d1920ffa35be3d6"
   integrity sha512-LRcTp8RmdHexL8olb7qErdROnJ2L6Js5Am99WQo0hiTRDWtk6vyUJJjTB6I/RcW8jwNQshM3NqH598DdhSOajA==
+  dependencies:
+    isomorphic.js "^0.2.4"
+
+lib0@^0.2.93:
+  version "0.2.93"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.93.tgz#95487c2a97657313cb1d91fbcf9f6d64b7fcd062"
+  integrity sha512-M5IKsiFJYulS+8Eal8f+zAqf5ckm1vffW0fFDxfgxJ+uiVopvDdd3PxJmz0GsVi3YNO7QCFSq0nAsiDmNhLj9Q==
   dependencies:
     isomorphic.js "^0.2.4"
 
@@ -11938,6 +11945,29 @@ y-protocols@^1.0.5, y-protocols@^1.0.6:
   integrity sha512-vHRF2L6iT3rwj1jub/K5tYcTT/mEYDUppgNPXwp8fmLpui9f7Yeq3OEtTLVF012j39QnV+KEQpNqoN7CWU7Y9Q==
   dependencies:
     lib0 "^0.2.85"
+
+y-supabase-mod@^0.0.4-8-alpha:
+  version "0.0.4-8-alpha"
+  resolved "https://registry.yarnpkg.com/y-supabase-mod/-/y-supabase-mod-0.0.4-8-alpha.tgz#2f3a568c516d1cc4fcb37e7d76e258d49146f101"
+  integrity sha512-TCYywRpQQcpMH6UhDIY1+p3Hr7jczKKoWXvQks/1oC7oOukdoOfnBO6iou+zEcnoD8yxIGwRl1e162DKpLyx6A==
+  dependencies:
+    "@supabase/realtime-js" "^2.6.0"
+    "@supabase/supabase-js" "^2.7.0"
+    debug "^4.3.2"
+    events "^3.3.0"
+    y-protocols "^1.0.5"
+
+y-supabase@^0.0.4-4-alpha, y-supabase@^0.0.4-7-alpha:
+  version "0.0.4-7-alpha"
+  resolved "https://registry.yarnpkg.com/y-supabase/-/y-supabase-0.0.4-7-alpha.tgz#8a2522ba0cb1b43acc5ca097823b9a123677a90b"
+  integrity sha512-T1y8tJuXN1FKHYdQrj/qaQpLp6x7apgoR7wPx7q1OmfQFe3AkPcQKOORkbOFNociwX3F95gdkOjrEsrT2X2zOg==
+  dependencies:
+    "@supabase/realtime-js" "^2.6.0"
+    "@supabase/supabase-js" "^2.7.0"
+    debug "^4.3.2"
+    events "^3.3.0"
+    y-protocols "^1.0.5"
+    y-supabase "^0.0.4-4-alpha"
 
 y-webrtc@^10.3.0:
   version "10.3.0"

@@ -5,38 +5,50 @@ import { useEffect, useRef, useState } from "react";
 import "../styles.css";
 import { channel } from '../supabase';
 
+// const doc = new Y.Doc({ guid: uuidv4(), collectionid: ROOM });
+// const provider = new WebrtcProvider(ROOM, doc);
 export default function Blocknote() {
   const [blocks, setBlocks] = useState([]);
   const subscriptionRef = useRef(null);
 
   const editor = useCreateBlockNote({
+    // collaboration: {
+    //   provider,
+    //   fragment: doc?.getXmlFragment("document-store"),
+    //   user: {
+    //     name: faker.person.fullName(),
+    //     color: faker.color.rgb(),
+    //   },
+    // },
   });
 
   useEffect(() => {
     // Subscribe to the Channel
-    if (!subscriptionRef?.current?.joinedOnce) {
-      subscriptionRef.current = channel;
-      channel.on('broadcast', { event: 'test' }, ({ payload }) => {
-          setBlocks(payload.blocks);
-        })
-        .subscribe();
+    if (!subscriptionRef.current?.joinedOnce) {
+      try {
+        subscriptionRef.current = channel;
+        subscriptionRef.current.on('broadcast', { event: 'test' }, ({ payload }) => {
+            console.log(payload);
+            setBlocks(payload.blocks);
+            //Y.applyUpdate(doc, payload.update);
+          })
+          .subscribe();
+      } catch (error) {
+        console.log('Failed to load');
+      }
     }
-  
-    // Clean up subscription on component unmount
-    return () => {
-      subscriptionRef.current?.unsubscribe();
-    };
-  }, []);
+  });
 
   const handleEditorChange = () => {
     const blocks = editor.document;
     setBlocks(blocks);
-    // Send a message once the client is subscribed
-    if(subscriptionRef.current) subscriptionRef.current.send({
-      type: 'broadcast',
-      event: 'test',
-      payload: { blocks },
-    });
+    if(subscriptionRef.current){
+      subscriptionRef.current.send({
+        type: 'broadcast',
+        event: 'test',
+        payload: { blocks },
+      });
+    }
   }
 
   return (
