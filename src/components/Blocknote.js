@@ -1,25 +1,28 @@
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "../styles.css";
-import { channel } from '../supabase';
+import { ROOM, channel } from '../supabase';
+import * as Y from "yjs";
+import { WebrtcProvider } from "y-webrtc";
+import { faker } from '@faker-js/faker';
 
-// const doc = new Y.Doc({ guid: uuidv4(), collectionid: ROOM });
-// const provider = new WebrtcProvider(ROOM, doc);
+const doc = new Y.Doc();
+const provider = new WebrtcProvider(ROOM, doc);
+
 export default function Blocknote() {
-  const [blocks, setBlocks] = useState([]);
   const subscriptionRef = useRef(null);
 
   const editor = useCreateBlockNote({
-    // collaboration: {
-    //   provider,
-    //   fragment: doc?.getXmlFragment("document-store"),
-    //   user: {
-    //     name: faker.person.fullName(),
-    //     color: faker.color.rgb(),
-    //   },
-    // },
+    collaboration: {
+      provider,
+      fragment: doc?.getXmlFragment("document-store"),
+      user: {
+        name: faker.person.fullName(),
+        color: faker.color.rgb(),
+      },
+    },
   });
 
   useEffect(() => {
@@ -28,9 +31,8 @@ export default function Blocknote() {
       try {
         subscriptionRef.current = channel;
         subscriptionRef.current.on('broadcast', { event: 'test' }, ({ payload }) => {
-            console.log(payload);
-            setBlocks(payload.blocks);
-            //Y.applyUpdate(doc, payload.update);
+            const updatedDoc = Uint8Array.from(payload.doc);
+            Y.applyUpdate(doc, updatedDoc);
           })
           .subscribe();
       } catch (error) {
@@ -40,15 +42,14 @@ export default function Blocknote() {
   });
 
   const handleEditorChange = () => {
-    const blocks = editor.getTextCursorPosition().block;
-    setBlocks(blocks);
-    // if(subscriptionRef.current){
-    //   subscriptionRef.current.send({
-    //     type: 'broadcast',
-    //     event: 'test',
-    //     payload: { blocks },
-    //   });
-    // }
+    console.log(editor.getSelectedText())
+    if(subscriptionRef.current){
+      subscriptionRef.current.send({
+        type: 'broadcast',
+        event: 'test',
+        payload: { doc: Array.from(Y.encodeStateAsUpdate(doc)) },
+      });
+    }
   }
 
   return (
@@ -59,12 +60,6 @@ export default function Blocknote() {
           editor={editor}
           onChange={handleEditorChange}
         />
-      </div>
-      <div>Document JSON:</div>
-      <div className={"item bordered"}>
-        <pre>
-          <code>{JSON.stringify(blocks, null, 2)}</code>
-        </pre>
       </div>
     </div>
   );
