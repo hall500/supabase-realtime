@@ -111,7 +111,7 @@
 //       checkIsSynced(room)
 //     })
 //   }
-  
+
 //   /**
 //    * @param {WebrtcConn} webrtcConn
 //    * @param {encoding.Encoder} encoder
@@ -122,7 +122,7 @@
 //       webrtcConn.peer.send(encoding.toUint8Array(encoder))
 //     } catch (e) {}
 //   }
-  
+
 //   /**
 //    * @param {Room} room
 //    * @param {Uint8Array} m
@@ -135,7 +135,6 @@
 //       } catch (e) {}
 //     })
 //   }
-
 
 //   export class SupabaseConn {
 //     constructor (remotePeerId, room) {
@@ -205,19 +204,18 @@
 //         }
 //       })
 //     }
-  
+
 //     destroy () {
 //       this.peer.destroy()
 //     }
 //   }
-
 
 //   const broadcastBcMessage = (room, m) => cryptoutils.encrypt(m, room.key).then(data =>
 //     room.mux(() =>
 //       bc.publish(room.name, data)
 //     )
 //   )
-  
+
 //   /**
 //    * @param {Room} room
 //    * @param {Uint8Array} m
@@ -228,7 +226,7 @@
 //     }
 //     broadcastWebrtcConn(room, m)
 //   }
-  
+
 //   /**
 //    * @param {Room} room
 //    */
@@ -243,7 +241,7 @@
 //       }
 //     })
 //   }
-  
+
 //   /**
 //    * @param {Room} room
 //    */
@@ -319,11 +317,11 @@
 //       this.destroy = this.destroy.bind(this)
 //       doc.on('destroy', this.destroy)
 //     }
-  
+
 //     get connected () {
 //       return this.room !== null && this.shouldConnect
 //     }
-  
+
 //     connect () {
 //       this.shouldConnect = true
 //       this.signalingUrls.forEach(url => {
@@ -336,7 +334,7 @@
 //         emitStatus(this)
 //       }
 //     }
-  
+
 //     disconnect () {
 //       this.shouldConnect = false
 //       this.signalingConns.forEach(conn => {
@@ -351,7 +349,7 @@
 //         emitStatus(this)
 //       }
 //     }
-  
+
 //     destroy () {
 //       this.doc.off('destroy', this.destroy)
 //       // need to wait for key before deleting room
